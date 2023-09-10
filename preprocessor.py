@@ -109,6 +109,9 @@ class Generator():
 
         for i in range(0, int(length_total), length_segment):
             time_start = i
+            if i + length_segment > length_total and (length_total - i) != length_segment:
+                break
+        
             mfcc = self.generate_mfcc(input_file, time_start, length_segment)
             X.append(mfcc)
             
@@ -116,8 +119,8 @@ class Generator():
             mfcc_image = Image.fromarray(mfcc_normalized).convert("L")
             mfcc_image.save(os.path.join(output_folder, f"{filename}-{i}.png"))
 
-        mfccs = np.stack(X)
-        return mfccs
+        # mfccs = np.stack(X)
+        return None # mfccs
 
     def generate_mfccs_all(self, input_folder, length_segment=1):
         """Generate a dataset of datafiles of all audio files in the input folder"""
