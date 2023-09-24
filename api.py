@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import pymysql
 from pymysql.cursors import DictCursor
+from datetime import datetime, timedelta
+from pytz import timezone
 
 app = Flask(__name__)
 CORS(app)
@@ -39,12 +41,52 @@ def get_stats_last(n_last):
     db_connection.close()
     return jsonify(rows)
 
-@app.route("/stats/count", methods=["GET"])
-def get_stats_count():
+@app.route("/stats/timelast/<string:range_time>", methods=["GET"])
+def get_stats_(range_time):
+    # Mapping of range_time to timedelta values
+    time_delta_map = {
+        "5m": timedelta(minutes=5),
+        "15m": timedelta(minutes=15),
+        "1h": timedelta(hours=1)
+    }
+
+    if range_time not in time_delta_map:
+        return jsonify({"error": "Invalid range_time"}), 400
+
+    time_delta = time_delta_map[range_time]
+    aest = timezone ("Australia/Brisbane")
+    time_threshold = datetime.now(aest) - time_delta
+
     db_connection = pymysql.connect(host=db_host, user=db_user, password=db_password, database=db_name, cursorclass=DictCursor)
     db_cursor = db_connection.cursor()
     db_cursor.execute("""
-        SELECT COUNT(*) FROM stats;             
+        SELECT * FROM stats 
+        WHERE timestamp >= %s
+        ORDER BY timestamp DESC;                  
+    """, (time_threshold,))
+    rows = db_cursor.fetchall()
+    db_cursor.close()
+    db_connection.close()
+    return jsonify(rows)
+
+@app.route("/stats/count/events", methods=["GET"])
+def get_stats_count_events():
+    db_connection = pymysql.connect(host=db_host, user=db_user, password=db_password, database=db_name, cursorclass=DictCursor)
+    db_cursor = db_connection.cursor()
+    db_cursor.execute("""
+        SELECT COUNT(DISTINCT timestamp) FROM stats;           
+    """)
+    rows = db_cursor.fetchall()
+    db_cursor.close()
+    db_connection.close()
+    return jsonify(rows)
+
+@app.route("/stats/count/datapoints", methods=["GET"])
+def get_stats_count_datapoints():
+    db_connection = pymysql.connect(host=db_host, user=db_user, password=db_password, database=db_name, cursorclass=DictCursor)
+    db_cursor = db_connection.cursor()
+    db_cursor.execute("""
+        SELECT COUNT(*) FROM stats;           
     """)
     rows = db_cursor.fetchall()
     db_cursor.close()
@@ -55,6 +97,7 @@ def get_stats_count():
 def insert_probabilities():
     # Retrieve probabilities from request
     probabilities = request.json.get('probabilities')
+    print(probabilities, type(probabilities))
 
     if not probabilities or not all(isinstance(prob, (float, int)) for prob in probabilities):
         return jsonify({"error": "Invalid probabilities"}), 400
@@ -83,4 +126,4 @@ def insert_probabilities():
         db_connection.close()
 
 if (__name__ == "__main__"):
-    app.run(port="5001", debug=True)
+    app.run(host="0.0.0.0", port="5001", debug=True)
