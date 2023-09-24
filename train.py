@@ -17,7 +17,7 @@ class Trainer():
         self.fn_optim = torch.optim.Adam(self.model.parameters(), lr=0.00005)
         self.fn_loss = torch.nn.CrossEntropyLoss()
         
-    def train(self, dl_train, dl_test):
+    def train(self, dl_train, dl_test, class_to_idx):
         # Train the model
         self.model.train()
         epoch = 0
@@ -57,12 +57,17 @@ class Trainer():
                 # writer.add_scalar('Test Accuracy', accuracy, epoch)
                 print(f"[Test Accuracy | Epoch=[{epoch}] | {accuracy}]")
                 
-                if (moving_accuracy.get_average() >= 90):
+                if (moving_accuracy.get_average() >= 92):
                     break
                 moving_accuracy.add(accuracy)
                 epoch += 1
-                
-        torch.save(self.model, self.path_state)
+        
+        state = {
+        'model': self.model,
+        'class_to_idx': class_to_idx
+        }
+        
+        torch.save(state, self.path_state)
         print("Saved model")
         # close the TensorBoard writer
         # writer.close()
