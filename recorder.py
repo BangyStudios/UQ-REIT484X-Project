@@ -6,7 +6,7 @@ class Recorder:
         self.size_chunk = 4096
         self.format = pyaudio.paInt32
         self.channels = 2
-        self.signal_sr = 44100
+        self.signal_sr = 16000
         
         self.p = pyaudio.PyAudio()
         self.stream = self.p.open(format=self.format,
