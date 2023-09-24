@@ -5,7 +5,6 @@ import recorder
 
 import wave
 import asyncio
-import requests
 
 class Pipeline:
     def __init__(self):
@@ -17,7 +16,7 @@ class Pipeline:
     async def run(self):
         while True:
             # Save latest audio recording to temporary buffer file
-            frames = self.recorder.get_frames(length_segment=4)
+            frames = self.recorder.get_frames(length_segment=2)
             with wave.open("./buffer/latest.wav", 'wb') as outputFile:
                 outputFile.setnchannels(self.recorder.channels)
                 outputFile.setsampwidth(self.recorder.p.get_sample_size(self.recorder.format))
@@ -25,20 +24,24 @@ class Pipeline:
                 outputFile.writeframes(b''.join(frames))
                 
             # Generate MFCCs
-            mfcc = self.preprocessor.generate_mfcc("./buffer/latest.wav", time_start=0, length_segment=2)
-            mfcc_transformed = self.transformer.get_transform_numpy(mfcc)
+            mfccs = self.preprocessor.generate_features_to_images("./buffer/latest.wav", "./buffer/latest/", length_segment=0.5)
+            
+            # Generate dataloaders
+            ds = dataset.Dataset()
+            dl = ds.get_dl_predict("./buffer", size_batch=5)
             
             # Run prediction
-            probabilities = self.predictor.predict(mfcc_transformed)[0]
+            probabilities  = self.predictor.predict(dl)
+            print(probabilities)
             
-            # Upload probabilities to API server
-            response = requests.post('http://127.0.0.1/stats/add', json={'probabilities': probabilities})
-            if response.status_code == 201:
-                print('Probabilities inserted successfully')
-            else:
-                print(f'Failed to insert probabilities: {response.json()}')
+            # # Upload probabilities to API server
+            # response = requests.post('http://192.168.0.223:5001/stats/add', json={'probabilities': probabilities})
+            # if response.status_code == 201:
+            #     print('Probabilities inserted successfully')
+            # else:
+            #     print(f'Failed to insert probabilities: {response.json()}')
             
-            await asyncio.sleep(10)
+            # await asyncio.sleep(10)
 
 pipeline = Pipeline()
 asyncio.run(pipeline.run())
