@@ -5,13 +5,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class MLP(nn.Module):
-    def __init__(self):
+    def __init__(self, n_class):
         super(MLP, self).__init__()
         self.flatten = nn.Flatten()
-        self.fc1 = nn.LazyLinear(out_features=1024)
-        self.fc2 = nn.LazyLinear(out_features=512)
-        self.fc3 = nn.LazyLinear(out_features=256)
-        self.fc4 = nn.LazyLinear(out_features=4)
+        self.fc1 = nn.LazyLinear(out_features=512)
+        self.fc2 = nn.LazyLinear(out_features=256)
+        self.fc3 = nn.LazyLinear(out_features=n_class)
         self.relu = nn.ReLU()
         self.softmax = nn.Softmax()
         self.dropout = nn.Dropout()
@@ -19,10 +18,9 @@ class MLP(nn.Module):
     def forward(self, x):
         x = self.flatten(x)
         x = self.relu(self.fc1(x))
-        x = self.relu(self.fc2(x))
         x = self.dropout(x)
-        x = self.relu(self.fc3(x))
-        x = self.softmax(self.fc4(x))
+        x = self.relu(self.fc2(x))
+        x = self.softmax(self.fc3(x))
         return x
     
 class CNN(nn.Module):
