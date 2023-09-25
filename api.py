@@ -9,7 +9,7 @@ app = Flask(__name__)
 CORS(app)
 
 """MySQL Configuration"""
-db_host = "au1-1.edge.icbix.com"
+db_host = "localhost"
 db_user = "fbinsect"
 db_password = "fbinsect"
 db_name = "fbinsect"
