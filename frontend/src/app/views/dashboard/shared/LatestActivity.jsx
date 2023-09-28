@@ -36,11 +36,11 @@ const LatestActivity = () => {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get(`http://localhost/api/stats/timelast/${timeRange}`);
+            const response = await axios.get(`/api/stats/timelast/${timeRange}`);
             const formattedData = formatData(response.data);
             setData(formattedData);
         } catch (error) {
-            console.error("Failed to load /stats/timelast/{0}".format(timeRange), error);
+            console.error(`Failed to load /stats/timelast/${timeRange}`, error);
         }
     };
 

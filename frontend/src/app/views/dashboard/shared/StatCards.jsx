@@ -37,7 +37,7 @@ const StatCards = () => {
   ]);
 
   const fetchTotalEvents = () => {
-    axios.get("http://localhost/api/stats/count/events")
+    axios.get("/api/stats/count/events")
       .then(response => {
         const totalEventsContent = response.data[0]['COUNT(DISTINCT timestamp)'];
         setCardList(prevList => [
@@ -55,7 +55,7 @@ const StatCards = () => {
   };
 
   const fetchTotalDatapoints = () => {
-    axios.get("http://localhost/api/stats/count/datapoints")
+    axios.get("/api/stats/count/datapoints")
       .then(response => {
         const totalDatapointsContent = response.data[0]['COUNT(*)'];
         setCardList(prevList => [
