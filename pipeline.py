@@ -5,6 +5,7 @@ import recorder
 
 import wave
 import asyncio
+import requests
 
 class Pipeline:
     def __init__(self):
@@ -31,17 +32,17 @@ class Pipeline:
             dl = ds.get_dl_predict("./buffer", size_batch=5)
             
             # Run prediction
-            probabilities  = self.predictor.predict(dl)
-            print(probabilities)
+            probabilities_dict = self.predictor.predict(dl)
+            probabilities = probabilities_dict.values()
             
             # # Upload probabilities to API server
-            # response = requests.post('http://192.168.0.223:5001/stats/add', json={'probabilities': probabilities})
-            # if response.status_code == 201:
-            #     print('Probabilities inserted successfully')
-            # else:
-            #     print(f'Failed to insert probabilities: {response.json()}')
+            response = requests.post('http://192.168.0.223:5001/stats/add', json={'probabilities': probabilities})
+            if response.status_code == 201:
+                print('Probabilities inserted successfully')
+            else:
+                print(f'Failed to insert probabilities: {response.json()}')
             
-            # await asyncio.sleep(10)
+            await asyncio.sleep(10)
 
 pipeline = Pipeline()
 asyncio.run(pipeline.run())

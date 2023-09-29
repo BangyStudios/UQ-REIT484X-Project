@@ -15,7 +15,7 @@ db_password = "fbinsect"
 db_name = "fbinsect"
 
 @app.route("/api/all", methods=["GET"])
-def get_stats_all():
+def get_events_all():
     db_connection = pymysql.connect(host=db_host, user=db_user, password=db_password, database=db_name, cursorclass=DictCursor)
     db_cursor = db_connection.cursor()
     db_cursor.execute("""
@@ -28,7 +28,7 @@ def get_stats_all():
     return jsonify(rows)
 
 @app.route("/api/last/<int:n_last>", methods=["GET"])
-def get_stats_last(n_last):
+def get_events_last(n_last):
     db_connection = pymysql.connect(host=db_host, user=db_user, password=db_password, database=db_name, cursorclass=DictCursor)
     db_cursor = db_connection.cursor()
     db_cursor.execute("""
@@ -42,7 +42,7 @@ def get_stats_last(n_last):
     return jsonify(rows)
 
 @app.route("/api/timelast/<string:range_time>", methods=["GET"])
-def get_stats_(range_time):
+def get_events_timelast(range_time):
     # Mapping of range_time to timedelta values
     time_delta_map = {
         "5m": timedelta(minutes=5),
@@ -70,7 +70,7 @@ def get_stats_(range_time):
     return jsonify(rows)
 
 @app.route("/api/count/events", methods=["GET"])
-def get_stats_count_events():
+def get_count_events():
     db_connection = pymysql.connect(host=db_host, user=db_user, password=db_password, database=db_name, cursorclass=DictCursor)
     db_cursor = db_connection.cursor()
     db_cursor.execute("""
@@ -82,7 +82,7 @@ def get_stats_count_events():
     return jsonify(rows)
 
 @app.route("/api/count/datapoints", methods=["GET"])
-def get_stats_count_datapoints():
+def get_count_datapoints():
     db_connection = pymysql.connect(host=db_host, user=db_user, password=db_password, database=db_name, cursorclass=DictCursor)
     db_cursor = db_connection.cursor()
     db_cursor.execute("""
