@@ -36,7 +36,7 @@ class Pipeline:
             probabilities = probabilities_dict.values()
             
             # # Upload probabilities to API server
-            response = requests.post('http://192.168.0.223:5001/stats/add', json={'probabilities': probabilities})
+            response = requests.post('http://localhost/api/add', json={'probabilities': probabilities})
             if response.status_code == 201:
                 print('Probabilities inserted successfully')
             else:
