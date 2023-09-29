@@ -40,7 +40,7 @@ const LatestActivity = () => {
             const formattedData = formatData(response.data);
             setData(formattedData);
         } catch (error) {
-            console.error(`Failed to load /stats/timelast/${timeRange}`, error);
+            console.error(`Failed to load /api/timelast/${timeRange}`, error);
         }
     };
 

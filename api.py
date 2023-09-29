@@ -14,7 +14,7 @@ db_user = "fbinsect"
 db_password = "fbinsect"
 db_name = "fbinsect"
 
-@app.route("/stats/all", methods=["GET"])
+@app.route("/all", methods=["GET"])
 def get_stats_all():
     db_connection = pymysql.connect(host=db_host, user=db_user, password=db_password, database=db_name, cursorclass=DictCursor)
     db_cursor = db_connection.cursor()
@@ -27,7 +27,7 @@ def get_stats_all():
     db_connection.close()
     return jsonify(rows)
 
-@app.route("/stats/last/<int:n_last>", methods=["GET"])
+@app.route("/last/<int:n_last>", methods=["GET"])
 def get_stats_last(n_last):
     db_connection = pymysql.connect(host=db_host, user=db_user, password=db_password, database=db_name, cursorclass=DictCursor)
     db_cursor = db_connection.cursor()
@@ -41,7 +41,7 @@ def get_stats_last(n_last):
     db_connection.close()
     return jsonify(rows)
 
-@app.route("/stats/timelast/<string:range_time>", methods=["GET"])
+@app.route("/timelast/<string:range_time>", methods=["GET"])
 def get_stats_(range_time):
     # Mapping of range_time to timedelta values
     time_delta_map = {
@@ -69,7 +69,7 @@ def get_stats_(range_time):
     db_connection.close()
     return jsonify(rows)
 
-@app.route("/stats/count/events", methods=["GET"])
+@app.route("/count/events", methods=["GET"])
 def get_stats_count_events():
     db_connection = pymysql.connect(host=db_host, user=db_user, password=db_password, database=db_name, cursorclass=DictCursor)
     db_cursor = db_connection.cursor()
@@ -81,7 +81,7 @@ def get_stats_count_events():
     db_connection.close()
     return jsonify(rows)
 
-@app.route("/stats/count/datapoints", methods=["GET"])
+@app.route("/count/datapoints", methods=["GET"])
 def get_stats_count_datapoints():
     db_connection = pymysql.connect(host=db_host, user=db_user, password=db_password, database=db_name, cursorclass=DictCursor)
     db_cursor = db_connection.cursor()
@@ -93,7 +93,7 @@ def get_stats_count_datapoints():
     db_connection.close()
     return jsonify(rows)
 
-@app.route('/stats/add', methods=['POST'])
+@app.route('/add', methods=['POST'])
 def insert_probabilities():
     # Retrieve probabilities from request
     probabilities = request.json.get('probabilities')

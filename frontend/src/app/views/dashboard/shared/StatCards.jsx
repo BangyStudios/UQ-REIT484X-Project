@@ -37,7 +37,7 @@ const StatCards = () => {
   ]);
 
   const fetchTotalEvents = () => {
-    axios.get("/api/stats/count/events")
+    axios.get("/api/count/events")
       .then(response => {
         const totalEventsContent = response.data[0]['COUNT(DISTINCT timestamp)'];
         setCardList(prevList => [
@@ -47,7 +47,7 @@ const StatCards = () => {
       })
       .catch(error => {
         setCardList(prevList => [
-          { ...prevList[0], amount: "Failed to load /stats/count/events" },
+          { ...prevList[0], amount: "Failed to load /api/count/events" },
           prevList[1],
         ]);
         console.error("There was an error fetching the total events:", error);
@@ -55,7 +55,7 @@ const StatCards = () => {
   };
 
   const fetchTotalDatapoints = () => {
-    axios.get("/api/stats/count/datapoints")
+    axios.get("/api/count/datapoints")
       .then(response => {
         const totalDatapointsContent = response.data[0]['COUNT(*)'];
         setCardList(prevList => [
@@ -66,7 +66,7 @@ const StatCards = () => {
       .catch(error => {
         setCardList(prevList => [
           prevList[0],
-          { ...prevList[1], amount: "Failed to load /stats/count/datapoints" },
+          { ...prevList[1], amount: "Failed to load /api/count/datapoints" },
         ]);
         console.error("There was an error fetching the total datapoints:", error);
       });
