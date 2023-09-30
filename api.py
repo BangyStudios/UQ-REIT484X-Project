@@ -1,18 +1,25 @@
+import pipeline
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import pymysql
 from pymysql.cursors import DictCursor
 from datetime import datetime, timedelta
 from pytz import timezone
+import threading
 
 app = Flask(__name__)
 CORS(app)
+
+pipeline = pipeline.Pipeline(run_delay=10)
 
 """MySQL Configuration"""
 db_host = "localhost"
 db_user = "fbinsect"
 db_password = "fbinsect"
 db_name = "fbinsect"
+
+# Get events endpoints
 
 @app.route("/api/all", methods=["GET"])
 def get_events_all():
@@ -69,6 +76,8 @@ def get_events_timelast(range_time):
     db_connection.close()
     return jsonify(rows)
 
+# Get event counts endpoints
+
 @app.route("/api/count/events", methods=["GET"])
 def get_count_events():
     db_connection = pymysql.connect(host=db_host, user=db_user, password=db_password, database=db_name, cursorclass=DictCursor)
@@ -93,10 +102,12 @@ def get_count_datapoints():
     db_connection.close()
     return jsonify(rows)
 
-@app.route('/api/add', methods=['POST'])
+# Insert endpoints
+
+@app.route("/api/add", methods=["POST"])
 def insert_probabilities():
     # Retrieve probabilities from request
-    probabilities = request.json.get('probabilities')
+    probabilities = request.json.get("probabilities")
     print(probabilities, type(probabilities))
 
     if not probabilities or not all(isinstance(prob, (float, int)) for prob in probabilities):
@@ -124,6 +135,25 @@ def insert_probabilities():
         # Close the cursor and connection
         db_cursor.close()
         db_connection.close()
+        
+# Pipeline endpoints
+
+@app.route("/api/pipeline/start")
+def pipeline_start():
+    pipeline.exit = False
+    pipeline_thread = threading.Thread(target=pipeline.run)
+    pipeline_thread.start()
+    return "Pipeline started..."
+
+@app.route("/api/pipeline/stop")
+def pipeline_stop():
+    pipeline.exit = True
+    return "Pipeline stopped..."
+
+@app.route("/api/pipeline/delay/<int:length_delay>", methods=["GET"])
+def pipeline_delay(length_delay):
+    pipeline.run_delay = length_delay;
+    return f"Pipeline delay set to {length_delay} seconds..."
 
 if (__name__ == "__main__"):
     app.run(port="5001", debug=True) # host="0.0.0.0"
