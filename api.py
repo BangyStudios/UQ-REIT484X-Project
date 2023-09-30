@@ -108,7 +108,6 @@ def get_count_datapoints():
 def insert_probabilities():
     # Retrieve probabilities from request
     probabilities = request.json.get("probabilities")
-    print(probabilities, type(probabilities))
 
     if not probabilities or not all(isinstance(prob, (float, int)) for prob in probabilities):
         return jsonify({"error": "Invalid probabilities"}), 400
