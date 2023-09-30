@@ -61,7 +61,7 @@ class Pipeline:
                 print(f'Failed to insert probabilities: {response.json()}')
             
             # Delay for specified time
-            time.sleep(self.delay)
+            time.sleep(self.run_delay)
         
     def init_folders(self):
         if not os.path.exists(self.buffer_path):
