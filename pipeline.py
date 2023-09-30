@@ -51,7 +51,7 @@ class Pipeline:
             
             # Run prediction
             probabilities_dict = self.predictor.predict(dl)
-            probabilities = probabilities_dict.values()
+            probabilities = list(probabilities_dict.values())
             
             # # Upload probabilities to API server
             response = requests.post('http://localhost/api/add', json={'probabilities': probabilities})
