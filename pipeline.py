@@ -70,7 +70,7 @@ class Pipeline:
         if not os.path.exists(self.latest_path):
             os.mkdir(self.latest_path)
             
-    def clear_folder(input_folder):
+    def clear_folder(self, input_folder):
         for input_file in os.listdir(input_folder):
             path_file = os.path.join(input_folder, input_file)
             try:
