@@ -1,0 +1,33 @@
+{
+    "path": {
+        "dataset": "./dataset/", 
+        "dataset_generated": "./dataset/generated/", 
+        "states": "./model/", 
+        "state": "./model/latest.txt", 
+        "recording": "./recording/", 
+        "recording_generated": "./recording/latest/"
+    }, 
+    "preprocessor": {
+        "length_segment": 0.5
+    }, 
+    "dataset": {
+        "balance_subfolders": true, 
+        "prop_train": 0.75, 
+        "size_batch": 5
+    },
+    "train": {
+        "force_cpu": true, 
+        "n_class": 3, 
+        "rate_learn": 0.00005,
+        "cond_break": "moving_accuracy", 
+        "accuracy_size": 5, 
+        "accuracy_threshold": 92, 
+        "n_epoch": 100
+    },
+    "jetson": {
+        "predict": true, 
+        "host": "192.168.0.223", 
+        "port": "5002"
+    }
+  }
+  
