@@ -17,7 +17,7 @@ class Trainer:
     def generate_dataset(self):
         # Delete previously generated images
         try:
-            shutil.rmtree(self.config.get("path").get("generated"))
+            shutil.rmtree(self.config.get("path").get("dataset_generated"))
         except Exception as e:
             print(f"An error occurred: {e}")
         
@@ -26,9 +26,9 @@ class Trainer:
         
     def get_dataset(self):
         if self.config.get("dataset").get("balance_subfolders"):
-            self.ds.balance_subfolders(self.config.get("path").get("generated"))
+            self.ds.balance_subfolders(self.config.get("path").get("dataset_generated"))
         dl_train, dl_test, class_to_idx = self.ds.get_dl_train(
-            dataset_path=self.config.get("path").get("generated"), 
+            dataset_path=self.config.get("path").get("dataset_generated"), 
             prop_train=self.config.get("dataset").get("prop_train"), 
             size_batch=self.config.get("dataset").get("size_batch")
         )
