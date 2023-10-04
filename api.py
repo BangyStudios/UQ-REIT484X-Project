@@ -1,5 +1,6 @@
 import pipeline
 
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import pymysql
@@ -151,7 +152,7 @@ def pipeline_stop():
 
 @app.route("/api/pipeline/delay/<int:length_delay>", methods=["GET"])
 def pipeline_delay(length_delay):
-    pipeline.run_delay = length_delay;
+    pipeline.run_delay = length_delay
     return f"Pipeline delay set to {length_delay} seconds..."
 
 if (__name__ == "__main__"):
