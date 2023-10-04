@@ -100,14 +100,14 @@ class Generator():
         """Generate a dataset of datafiles of all audio files in the input folder"""
         for root, _, files in os.walk(input_folder):
             folder_current = os.path.basename(root)
-            if root == input_folder or folder_current == "dataset":
+            if root == input_folder or folder_current == "generated":
                 continue
 
             for filename in files:
                 if filename == ".DS_Store":
                     continue
                 input_file = os.path.join(root, filename)
-                output_folder = os.path.join(input_folder, "dataset", folder_current)
+                output_folder = os.path.join(input_folder, "generated", folder_current)
                 if not os.path.exists(output_folder):
                     os.makedirs(output_folder)
                 self.generate_features_to_images(input_file, output_folder, length_segment)

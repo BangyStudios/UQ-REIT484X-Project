@@ -1,27 +1,38 @@
 import modules
+import config
 
 import torch
 import torch.nn
 
 from collections import deque
 
-class Trainer():
-    def __init__(self, path_state="./model.txt"):
-        self.device = self.init_device(force_cpu=False) # Initialize device
+class Train():
+    def __init__(self):
+        # Load configuration
+        self.config = config.get_config()
+        self.force_cpu = self.config.get("train").get("force_cpu")
+        self.n_class = self.config.get("train").get("n_class")
+        self.rate_learn = self.config.get("train").get("rate_learn")
+        self.path_state = self.config.get("path").get("state")
+        self.cond_break = self.config.get("train").get("cond_break")
+        self.accuracy_size = self.config.get("train").get("accuracy_size")
+        self.accuracy_threshold = self.config.get("train").get("accuracy_threshold")
+        self.n_epoch = self.config.get("train").get("n_epoch")
+        
+        self.device = self.init_device(force_cpu=self.force_cpu) # Initialize device
         self.print_device()
-        self.path_state = path_state
         try:
             self.model = torch.load(self.path_state)
         except(FileNotFoundError):
-            self.model = modules.CNN(n_class=3).to(self.device)
-        self.fn_optim = torch.optim.Adam(self.model.parameters(), lr=0.00005)
+            self.model = modules.CNN(n_class=self.n_class).to(self.device)
+        self.fn_optim = torch.optim.Adam(self.model.parameters(), lr=self.rate_learn)
         self.fn_loss = torch.nn.CrossEntropyLoss()
         
     def train(self, dl_train, dl_test, class_to_idx):
         # Train the model
         self.model.train()
         epoch = 0
-        moving_accuracy = MovingAverage(window_size=5)
+        moving_accuracy = MovingAverage(window_size=self.accuracy_size)
         while True:
             running_loss = 0.0
             for i, data in enumerate(dl_train, 0):
@@ -57,8 +68,13 @@ class Trainer():
                 # writer.add_scalar('Test Accuracy', accuracy, epoch)
                 print(f"[Test Accuracy | Epoch=[{epoch}] | {accuracy}]")
                 
-                if (moving_accuracy.get_average() >= 92):
-                    break
+                if (self.cond_break == "moving_accuracy"):
+                    if (moving_accuracy.get_average() >= self.accuracy_threshold):
+                        break
+                elif (self.cond_break == "n_epoch"):
+                    if (epoch > self.n_epoch):
+                        break
+                
                 moving_accuracy.add(accuracy)
                 epoch += 1
         

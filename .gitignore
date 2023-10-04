@@ -2,3 +2,6 @@
 /datasets/*
 /buffer/*
 *__pycache__
+dataimports/*
+dataset/*
+recording/*
