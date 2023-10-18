@@ -1,9 +1,40 @@
 import React from 'react';
 import { useTheme } from '@mui/material';
 import ReactEcharts from 'echarts-for-react';
+import axios from "axios";
+import { useState, useEffect } from "react";
 
 const DoughnutChart = ({ height, color = [] }) => {
   const theme = useTheme();
+  const [classProbabilities, setClassProbabilities] = useState([]);
+
+  useEffect(() => {
+    axios.get("/api/count/probability")
+      .then(response => {
+        setClassProbabilities(response.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
+
+  const getClassName = (classId) => {
+    switch (classId) {
+      case "0":
+        return "Control (None)";
+      case "1":
+        return "Cricket";
+      case "2":
+        return "Fly";
+      default:
+        return `Class ${classId}`;
+    }
+  };
+
+  const processedData = classProbabilities.map(entry => ({
+    value: entry.totalProbability,
+    name: getClassName(entry.classId)
+  }));
 
   const option = {
     legend: {
@@ -45,7 +76,7 @@ const DoughnutChart = ({ height, color = [] }) => {
 
     series: [
       {
-        name: 'Traffic Rate',
+        name: 'Insect Activity',
         type: 'pie',
         radius: ['45%', '72.55%'],
         center: ['50%', '50%'],
@@ -78,17 +109,10 @@ const DoughnutChart = ({ height, color = [] }) => {
             show: false
           }
         },
-        data: [
-          {
-            value: 65,
-            name: 'Google'
-          },
-          {
-            value: 20,
-            name: 'Facebook'
-          },
-          { value: 15, name: 'Others' }
-        ],
+        data: classProbabilities.map(({ class: classId, totalProbability }) => ({
+          value: totalProbability,
+          name: getClassName(classId)
+        })), 
         itemStyle: {
           emphasis: {
             shadowBlur: 10,

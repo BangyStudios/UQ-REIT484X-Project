@@ -1,45 +1,45 @@
-import axios from 'axios';
-import { useState, useEffect } from 'react';
+import axios from "axios";
+import { useState, useEffect } from "react";
 
-import { Box, Card, Grid, Icon, IconButton, styled, Tooltip } from '@mui/material';
-import { Small } from 'app/components/Typography';
+import { Box, Card, Grid, Icon, IconButton, styled, Tooltip } from "@mui/material";
+import { Small } from "app/components/Typography";
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  display: 'flex',
-  flexWrap: 'wrap',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  padding: '24px !important',
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: "24px !important",
   background: theme.palette.background.paper,
-  [theme.breakpoints.down('sm')]: { padding: '16px !important' },
+  [theme.breakpoints.down("sm")]: { padding: "16px !important" },
 }));
 
 const ContentBox = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexWrap: 'wrap',
-  alignItems: 'center',
-  '& small': { color: theme.palette.text.secondary },
-  '& .icon': { opacity: 0.6, fontSize: '44px', color: theme.palette.primary.main },
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "center",
+  "& small": { color: theme.palette.text.secondary },
+  "& .icon": { opacity: 0.6, fontSize: "44px", color: theme.palette.primary.main },
 }));
 
-const Heading = styled('h6')(({ theme }) => ({
+const Heading = styled("h6")(({ theme }) => ({
   margin: 0,
-  marginTop: '4px',
-  fontSize: '14px',
-  fontWeight: '500',
+  marginTop: "4px",
+  fontSize: "14px",
+  fontWeight: "500",
   color: theme.palette.primary.main,
 }));
 
 const StatCards = () => {
   const [cardList, setCardList] = useState([
-    { name: 'Total Events', amount: 0, icon: 'group' },
-    { name: 'Total Datapoints', amount: 0, icon: 'group'}
+    { name: "Total Events", amount: 0, icon: "list" },
+    { name: "Total Datapoints", amount: 0, icon: "list"},
   ]);
 
   const fetchTotalEvents = () => {
     axios.get("/api/count/events")
       .then(response => {
-        const totalEventsContent = response.data[0]['COUNT(DISTINCT timestamp)'];
+        const totalEventsContent = response.data[0]["COUNT(DISTINCT timestamp)"];
         setCardList(prevList => [
           { ...prevList[0], amount: totalEventsContent },
           prevList[1],
@@ -57,7 +57,7 @@ const StatCards = () => {
   const fetchTotalDatapoints = () => {
     axios.get("/api/count/datapoints")
       .then(response => {
-        const totalDatapointsContent = response.data[0]['COUNT(*)'];
+        const totalDatapointsContent = response.data[0]["COUNT(*)"];
         setCardList(prevList => [
           prevList[0],
           { ...prevList[1], amount: totalDatapointsContent },
@@ -83,7 +83,7 @@ const StatCards = () => {
     }
 
   return (
-    <Grid container spacing={3} sx={{ mb: '24px' }}>
+    <Grid container spacing={3} sx={{ mb: "24px" }}>
       {cardList.map((item, index) => (
         <Grid item xs={12} md={6} key={index}>
           <StyledCard elevation={6}>

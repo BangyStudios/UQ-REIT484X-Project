@@ -39,14 +39,14 @@ const Footer = () => {
       <AppBar color="primary" position="static" sx={{ zIndex: 96 }}>
         <AppFooter>
           <FooterContent>
-            <a href="https://ui-lib.com/downloads/matx-pro-react-admin/">
+            <a href="https://ban.gy/" target="_blank">
               <Button variant="contained" color="secondary">
-                Get MatX Pro
+                Portfolio
               </Button>
             </a>
             <Span sx={{ m: 'auto' }}></Span>
             <Paragraph sx={{ m: 0 }}>
-              Design and Developed by <a href="http://ui-lib.com">UI Lib</a>
+              Built with Love by <a href="https://jameschensmith.com" target="_blank">James Chen-Smith</a>
             </Paragraph>
           </FooterContent>
         </AppFooter>
