@@ -1,18 +1,24 @@
+import config
+
+import os
 import torch
 import torch.nn
 import numpy as np
 
 class Predict:
-    def __init__(self, path_state="./model.txt"):
+    def __init__(self):
+        self.config = config.get_config()
+        self.path_state = os.path.join(self.config.get("path").get("states"), "latest.txt")
+        
         self.device = self.init_device() # Initialize device
         self.print_device()
         try:
-            state = torch.load(path_state, map_location=self.device)
+            state = torch.load(self.path_state, map_location=self.device)
             self.model = state["model"].to(self.device)
             class_to_idx = state["class_to_idx"]
             self.idx_to_class = {v: k for k, v in class_to_idx.items()}
         except(FileNotFoundError):
-            print(f"Model state file {path_state} not found.")
+            print(f"Model state file {self.path_state} not found.")
         
     def predict(self, dl):
         self.model.eval()
@@ -38,11 +44,14 @@ class Predict:
         return probabilities
             
     def init_device(self):
-        if (torch.backends.mps.is_available()):
-            device = torch.device("mps")
-        elif (torch.cuda.is_available()):
-            device = torch.device("cuda")
-        else:
+        try:
+            if (torch.backends.mps.is_available()):
+                device = torch.device("mps")
+            elif (torch.cuda.is_available()):
+                device = torch.device("cuda")
+            else:
+                device = torch.device("cpu")
+        except (AttributeError):
             device = torch.device("cpu")
         return device
     

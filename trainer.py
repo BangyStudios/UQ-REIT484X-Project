@@ -10,6 +10,7 @@ import shutil
 class Trainer:
     def __init__(self):
         self.config = config.get_config()
+        self.path_dataset_generated = os.path.join(self.config.get("path").get("dataset"), "generated/")
         
         self.generator = preprocessor.Generator()
         self.ds = dataset.Dataset()
@@ -17,18 +18,19 @@ class Trainer:
     def generate_dataset(self):
         # Delete previously generated images
         try:
-            shutil.rmtree(self.config.get("path").get("dataset_generated"))
+            shutil.rmtree(self.path_dataset_generated)
         except Exception as e:
             print(f"An error occurred: {e}")
         
         # Generate images from files
-        self.generator.generate_features_all(self.config.get("path").get("dataset"))
+        length_segment = self.config.get("preprocessor").get("length_segment")
+        self.generator.generate_features_all(self.config.get("path").get("dataset"), length_segment)
         
     def get_dataset(self):
         if self.config.get("dataset").get("balance_subfolders"):
-            self.ds.balance_subfolders(self.config.get("path").get("dataset_generated"))
+            self.ds.balance_subfolders(self.path_dataset_generated)
         dl_train, dl_test, class_to_idx = self.ds.get_dl_train(
-            dataset_path=self.config.get("path").get("dataset_generated"), 
+            dataset_path=self.path_dataset_generated, 
             prop_train=self.config.get("dataset").get("prop_train"), 
             size_batch=self.config.get("dataset").get("size_batch")
         )
@@ -36,8 +38,8 @@ class Trainer:
     
     def backup_state(self):
         try:
-            path_state = self.config.get("path").get("state")
             path_states = self.config.get("path").get("states")
+            path_state = os.path.join(path_states, "latest.txt")
             
             # Fetch file creation time
             time_created = os.path.getctime(path_state)

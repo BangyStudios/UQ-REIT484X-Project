@@ -1,14 +1,17 @@
 {
     "path": {
         "dataset": "./dataset/", 
-        "dataset_generated": "./dataset/generated/", 
         "states": "./model/", 
-        "state": "./model/latest.txt", 
-        "recording": "./recording/", 
-        "recording_generated": "./recording/latest/"
+        "recording": "./recording/"
+    },
+    "recorder": {
+        "length": 4, 
+        "size_chunk": 1024, 
+        "channels": 2, 
+        "signal_sr": 16000
     }, 
     "preprocessor": {
-        "length_segment": 0.5
+        "length_segment": 1
     }, 
     "dataset": {
         "balance_subfolders": true, 
@@ -18,16 +21,36 @@
     "train": {
         "force_cpu": true, 
         "n_class": 3, 
-        "rate_learn": 0.00005,
+        "rate_learn": 0.0001,
         "cond_break": "moving_accuracy", 
         "accuracy_size": 5, 
         "accuracy_threshold": 92, 
         "n_epoch": 100
     },
+    "offload": {
+        "jetson_preprocess": true, 
+        "jetson_pipeline": false, 
+        "jetson_train": false
+    }, 
+    "pipeline": {
+        "run_delay": 4, 
+        "update_freq": 1
+    }, 
+    "rpi": {
+        "host": "192.168.0.100", 
+        "api_host": "0.0.0.0", 
+        "api_port": 5001, 
+        "api_debug": true, 
+        "api_db_host": "localhost", 
+        "api_db_user": "fbinsect", 
+        "api_db_password": "fbinsect", 
+        "api_db_name": "fbinsect" 
+    }, 
     "jetson": {
-        "predict": true, 
-        "host": "192.168.0.223", 
-        "port": "5002"
+        "host": "192.168.0.101", 
+        "api_host": "0.0.0.0", 
+        "api_port": 5001, 
+        "api_debug": true
     }
   }
   

@@ -3,8 +3,8 @@ import config
 
 import torch
 import torch.nn
-
 from collections import deque
+import os
 
 class Train():
     def __init__(self):
@@ -13,7 +13,8 @@ class Train():
         self.force_cpu = self.config.get("train").get("force_cpu")
         self.n_class = self.config.get("train").get("n_class")
         self.rate_learn = self.config.get("train").get("rate_learn")
-        self.path_state = self.config.get("path").get("state")
+        self.path_states = self.config.get("path").get("states")
+        self.path_state = os.path.join(self.path_states, "latest.txt")
         self.cond_break = self.config.get("train").get("cond_break")
         self.accuracy_size = self.config.get("train").get("accuracy_size")
         self.accuracy_threshold = self.config.get("train").get("accuracy_threshold")
@@ -83,6 +84,9 @@ class Train():
         'class_to_idx': class_to_idx
         }
         
+        if not os.path.exists(self.path_states):
+            os.makedirs(self.path_states)
+        
         torch.save(state, self.path_state)
         print("Saved model")
         # close the TensorBoard writer
@@ -91,12 +95,14 @@ class Train():
     def init_device(self, force_cpu=False):
         if (force_cpu):
             return torch.device("cpu")
-        
-        if (torch.backends.mps.is_available()):
-            device = torch.device("mps")
-        elif (torch.cuda.is_available()):
-            device = torch.device("cuda")
-        else:
+        try:
+            if (torch.backends.mps.is_available()):
+                device = torch.device("mps")
+            elif (torch.cuda.is_available()):
+                device = torch.device("cuda")
+            else:
+                device = torch.device("cpu")
+        except (AttributeError):
             device = torch.device("cpu")
         return device
     

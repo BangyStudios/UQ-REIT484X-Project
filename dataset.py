@@ -36,7 +36,7 @@ class Dataset:
         sampler = WeightedRandomSampler(samples_weights, len(samples_weights))
 
         # Create dataloaders
-        dl_train = torch.utils.data.DataLoader(ds_train, batch_size=size_batch, shuffle=False) # sampler=sampler
+        dl_train = torch.utils.data.DataLoader(ds_train, batch_size=size_batch, shuffle=False, sampler=sampler) # sampler=sampler
         dl_test = torch.utils.data.DataLoader(ds_test, batch_size=size_batch, shuffle=False)
         
         return dl_train, dl_test, class_to_idx
