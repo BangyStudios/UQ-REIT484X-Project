@@ -82,6 +82,40 @@ def get_events_timelast(range_time):
     db_connection.close()
     return jsonify(rows)
 
+# Delete events endpoint
+
+@app.route("/api/prune/<int:n_last>", methods=["GET"])
+def prune_events_last(n_last):
+    db_connection = pymysql.connect(host=db_host, user=db_user, password=db_password, database=db_name, cursorclass=DictCursor)
+    db_cursor = db_connection.cursor()
+    
+    # Get the timestamp of the nth last entry
+    db_cursor.execute("""
+        SELECT timestamp FROM stats
+        ORDER BY timestamp DESC
+        LIMIT 1 OFFSET %s;
+    """, (n_last-1,))
+    
+    row = db_cursor.fetchone()
+    if row is None:
+        db_cursor.close()
+        db_connection.close()
+        return jsonify({"message": "Insufficient data points"}), 400
+    
+    nth_timestamp = row["timestamp"]
+    
+    # Delete all entries older than nth_timestamp
+    db_cursor.execute("""
+        DELETE FROM stats
+        WHERE timestamp < %s;
+    """, (nth_timestamp,))
+    
+    db_connection.commit()
+    db_cursor.close()
+    db_connection.close()
+    
+    return jsonify({"message": "Pruned successfully"}), 200
+
 # Get event counts endpoints
 
 @app.route("/api/count/events", methods=["GET"])

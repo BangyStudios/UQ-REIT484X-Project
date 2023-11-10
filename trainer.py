@@ -58,4 +58,17 @@ class Trainer:
         dl_train, dl_test, class_to_idx = self.get_dataset()
         self.backup_state()
         tr = train.Train()
-        tr.train(dl_train, dl_test, class_to_idx)
+        moving_accuracy = tr.train(dl_train, dl_test, save=True, class_to_idx=class_to_idx)
+        return moving_accuracy
+        
+    def run_train_kfcv(self, k, model_params):
+        self.generate_dataset()
+        ds = self.ds.get_ds(dataset_path=self.path_dataset_generated)
+        tr = train.Train()
+        kfcv_accuracy = tr.train_kfcv(
+            ds=ds, 
+            size_batch=self.config.get("dataset").get("size_batch"), 
+            k=k, 
+            model_params=model_params
+        )
+        return kfcv_accuracy

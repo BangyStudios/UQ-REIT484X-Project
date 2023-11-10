@@ -19,13 +19,14 @@
         "size_batch": 5
     },
     "train": {
-        "force_cpu": true, 
+        "force_cpu": false, 
         "n_class": 3, 
-        "rate_learn": 0.0001,
-        "cond_break": "moving_accuracy", 
+        "rate_learn": 0.0003,
+        "cond_break": "best_for", 
         "accuracy_size": 5, 
         "accuracy_threshold": 92, 
-        "n_epoch": 100
+        "n_epoch": 100, 
+        "best_for_threshold": 100
     },
     "offload": {
         "jetson_preprocess": true, 

@@ -54,9 +54,7 @@ class AudioSet:
 
 subset_ids = {
             "Fly": "/m/0h2mp", 
-            # "Cricket": "/m/09xqv",
-            # "Mosquito": "/m/09f96",
-            # "Bee": "/m/01h3n"
+            "Cricket": "/m/09xqv",
         }
 
 audioset = AudioSet(subset_ids)

@@ -13,6 +13,10 @@ class Dataset:
             torchvision.transforms.Grayscale()
         ])
         
+    def get_ds(self, dataset_path):
+        ds = torchvision.datasets.ImageFolder(root=dataset_path, transform=self.transform)
+        return ds
+        
     def get_dl_train(self, dataset_path, prop_train=0.75, size_batch=100, oversample=True):
         ds = torchvision.datasets.ImageFolder(root=dataset_path, transform=self.transform)
         class_to_idx = ds.class_to_idx

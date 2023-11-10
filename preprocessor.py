@@ -8,7 +8,6 @@ import os
 
 class Preprocessor():
     def __init__(self):
-        self.coef_pe = 0.97
         self.frame_length = 0.025
         self.frame_hop = 0.010
         
